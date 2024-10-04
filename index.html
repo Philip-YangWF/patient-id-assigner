@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient ID Assigner</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Patient ID Assigner</h1>
+
+        <input type="text" id="patientName" placeholder="Enter patient name">
+        <br>
+        <button id="assignBtn">Assign ID</button>
+
+        <h2>Assigned Patient IDs</h2>
+        <ul id="patientList"></ul>
+
+        <br><br>
+
+        <h2>Manage ID Pool</h2>
+        <textarea id="newIds" placeholder="Enter new IDs (comma or space separated)"></textarea>
+        <button id="addIdBtn">Add IDs</button>
+        <br>
+        <ul id="idPoolList"></ul>
+
+        <br><br>
+
+        <!-- Buttons to Clear Data -->
+        <button id="clearPatientDataBtn">Clear All Names</button>
+        <button id="clearIdDataBtn">Clear All IDs</button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
