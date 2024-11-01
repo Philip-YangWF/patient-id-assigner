@@ -10,7 +10,7 @@ let availableIds = JSON.parse(localStorage.getItem('availableIds')) || [...idPoo
 // Function to display the list of assigned patients
 function displayAssignedPatients() {
     const patientList = document.getElementById('patientList');
-    patientList.innerHTML = ''; // Clear the list before displaying
+    patientList.innerHTML = '';
 
     for (let patient in assignedPatients) {
         const listItem = document.createElement('li');
@@ -22,7 +22,7 @@ function displayAssignedPatients() {
 // Function to display the list of available IDs in the pool
 function displayIdPool() {
     const idPoolList = document.getElementById('idPoolList');
-    idPoolList.innerHTML = ''; // Clear the list before displaying
+    idPoolList.innerHTML = '';
 
     availableIds.forEach(id => {
         const listItem = document.createElement('li');
@@ -35,17 +35,17 @@ function displayIdPool() {
 function assignID() {
     const patientName = document.getElementById('patientName').value.trim();
     if (!patientName) {
-        alert('Please enter a valid patient name.');
+        showMessage('Please enter a valid patient name.', 'error');
         return;
     }
 
     if (assignedPatients[patientName]) {
-        alert(`Patient ${patientName} already has an ID assigned: ${assignedPatients[patientName]}`);
+        showMessage(`Patient ${patientName} already has an ID assigned: ${assignedPatients[patientName]}`, 'error');
         return;
     }
 
     if (availableIds.length === 0) {
-        alert("No more IDs available in the pool.");
+        showMessage('No more IDs available in the pool.', 'error');
         return;
     }
 
@@ -64,15 +64,19 @@ function assignID() {
     displayAssignedPatients();
     displayIdPool();
 
-    // Clear the input field
+    // Show success message
+    showMessage(`Successfully assigned ID ${assignedId} to patient ${patientName}.`, 'success');
+
+    // Clear the input field and disable the assign button
     document.getElementById('patientName').value = '';
+    document.getElementById('assignBtn').disabled = true;
 }
 
 // Function to add multiple IDs to the pool
 function addIDToPool() {
     const newIdsInput = document.getElementById('newIds').value.trim();
     if (!newIdsInput) {
-        alert('Please enter valid IDs.');
+        showMessage('Please enter valid IDs.', 'error');
         return;
     }
 
@@ -92,6 +96,9 @@ function addIDToPool() {
     // Update the UI
     displayIdPool();
 
+    // Show success message
+    showMessage('IDs successfully added to the pool.', 'success');
+
     // Clear the input field
     document.getElementById('newIds').value = '';
 }
@@ -102,6 +109,7 @@ function clearPatientData() {
         localStorage.removeItem('assignedPatients');
         assignedPatients = {};
         displayAssignedPatients();
+        showMessage('All patient names have been cleared.', 'success');
     }
 }
 
@@ -109,9 +117,25 @@ function clearPatientData() {
 function clearIdData() {
     if (confirm('Are you sure you want to clear all IDs? This cannot be undone!')) {
         localStorage.removeItem('availableIds');
-        availableIds = [...idPool]; // Reset to default IDs
+        availableIds = [...idPool];
         displayIdPool();
+        showMessage('All IDs have been cleared.', 'success');
     }
+}
+
+// Function to show a message in the message box
+function showMessage(message, type) {
+    const messageBox = document.getElementById('messageBox');
+    messageBox.textContent = message;
+
+    // Set the message type (success or error)
+    messageBox.className = `message-box ${type}`;
+
+    // Automatically hide the message after 3 seconds
+    setTimeout(() => {
+        messageBox.textContent = '';
+        messageBox.className = 'message-box';
+    }, 3000);
 }
 
 // Attach event listeners
@@ -119,6 +143,9 @@ document.getElementById('assignBtn').addEventListener('click', assignID);
 document.getElementById('addIdBtn').addEventListener('click', addIDToPool);
 document.getElementById('clearPatientDataBtn').addEventListener('click', clearPatientData);
 document.getElementById('clearIdDataBtn').addEventListener('click', clearIdData);
+document.getElementById('patientName').addEventListener('input', function() {
+    document.getElementById('assignBtn').disabled = !this.value.trim();
+});
 
 // Display the patients and IDs on page load
 window.onload = function() {
